@@ -2,6 +2,7 @@ import initKnex from "knex";
 import configuration from "../knexfile.js";
 const knex = initKnex(configuration);
 
+// to get list of all warehouses
 const index = async (_req, res) => {
   try {
     const data = await knex
@@ -23,6 +24,7 @@ const index = async (_req, res) => {
   }
 };
 
+// to get a specific warehouse based on id; includes all information
 const findOne = async (req, res) => {
   try {
     const warehouseFound = await knex("warehouses").where({
@@ -43,7 +45,29 @@ const findOne = async (req, res) => {
   }
 };
 
+
+// to get inventories for a given warehouse
+const getInventory = async (req, res) => {
+    try {
+        const inventoryItems = await knex("warehouses")
+            .join("inventories", "inventories.warehouse_id", "warehouses.id")
+            .where({ warehouse_id: req.params.id }).select("inventories.id", "inventories.item_name", "inventories.category", "inventories.status", "inventories.quantity")
+        
+        if (inventoryItems.length === 0) {
+            return res.status(404).json({
+                message: `Could not find any items for warehouse with ID ${req.params.id}.`
+            })
+        }
+        res.json(inventoryItems)
+    } catch (e) {
+        res.status(500).json({
+            message: `Unable to retrieve inventory items for warehouse with ID ${req.params.id}: ${e}`
+        })
+    }
+}
+
 export {
     index,
-    findOne
+    findOne,
+    getInventory
  };
