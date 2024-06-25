@@ -58,7 +58,7 @@ const getInventory = async (req, res) => {
                 message: `Could not find any items for warehouse with ID ${req.params.id}.`
             })
         }
-        res.json(inventoryItems)
+        res.status(200).json(inventoryItems)
     } catch (e) {
         res.status(500).json({
             message: `Unable to retrieve inventory items for warehouse with ID ${req.params.id}: ${e}`
