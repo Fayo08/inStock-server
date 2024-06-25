@@ -1,12 +1,30 @@
 import express from "express";
 const router = express.Router();
-const inventoryController = require('../controllers/inventory-controller.js');
+import {
+    validateInventory,
+    checkWarehouseExists,
+    checkInventoryExists,
+    createInventoryItem,
+    updateInventoryItem
+} from "../controllers/inventory-controller.js";
+
+// create new inventory item //
 
 router.post(
     '/',
-    inventoryController.validateInventory,
-    inventoryController.checkWarehouseExists,
-    inventoryController.createInventoryItem
+    validateInventory,
+    checkWarehouseExists,
+    createInventoryItem
+);
+
+// update existing inventory item //
+
+router.put(
+    '/:id',
+    validateInventory,
+    checkWarehouseExists,
+    checkInventoryExists,
+    updateInventoryItem
 );
 
 export default router;
