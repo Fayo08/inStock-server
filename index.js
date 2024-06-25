@@ -10,9 +10,9 @@ app.use(express.json());
 
 const PORT = process.env.PORT || 8080;
 
-app.use('/warehouse', warehouseRoutes);
+app.use('/api/warehouse', warehouseRoutes);
 
-app.use('/inventories', inventoryRoutes);
+app.use('/api/inventories', inventoryRoutes);
 
 app.listen(PORT, () => {
     console.log(`Server started on port ${PORT}`)
