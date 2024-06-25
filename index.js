@@ -10,7 +10,7 @@ app.use(express.json());
 
 const PORT = process.env.PORT || 8080;
 
-app.use('/api/warehouse', warehouseRoutes);
+app.use('/api/warehouses', warehouseRoutes)
 
 app.use('/api/inventories', inventoryRoutes);
 

@@ -1,16 +1,9 @@
-import initKnex from "knex";
-import configuration from "../knexfile.js";
-const knex = initKnex(configuration);
 import express from "express";
+import * as warehouseController from '../controllers/warehouse-controller.js'
 const router = express.Router();
 
-router.get("/", async (_req, res) => {
-    try {
-        const data = await knex("warehouses")
-        res.status(200).json(data)
-    } catch (e) {
-        res.status(400).send(`Error retrieving warehouses: ${e}`)
-    }
-})
+router.route("/").get(warehouseController.index);
+
+router.route("/:id").get(warehouseController.findOne);
 
 export default router;
