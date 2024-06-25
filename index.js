@@ -9,7 +9,7 @@ app.use(express.json());
 
 const PORT = process.env.PORT || 8080;
 
-app.use('/warehouse', warehouseRoutes)
+app.use('/warehouses', warehouseRoutes)
 
 app.get('/', (_req, res) => {
     res.send('Hello World');
