@@ -2,6 +2,7 @@ import initKnex from "knex";
 import configuration from "../knexfile.js";
 const knex = initKnex(configuration);
 
+
 const validateInventory = (req, res, next) => {
     const {warehouse_id, item_name, description, category, status, quantity} = req.body;
 
@@ -37,6 +38,23 @@ const checkInventoryExists = async (req, res, next) => {
 
     next();
 }
+
+const getInventoryLists = async (req, res) => {
+    try {
+     
+      const getInventoryLists = await knex("inventories")
+      
+      .join("warehouses", "inventories.warehouse_id", "warehouses.id")
+      .where({ "inventories.warehouse_id": req.params.id })
+
+
+      res.json(getInventoryLists);
+    } catch (error) {
+      res.status(500).json({
+        message: `Unable to retrieve lists with ID ${req.params.id}: ${error}`,
+      });
+    }
+  };
 
 const createInventoryItem = async (req, res) => {
     try {
@@ -87,6 +105,7 @@ export {
     validateInventory,
     checkWarehouseExists,
     checkInventoryExists,
+    getInventoryLists,
     createInventoryItem,
     updateInventoryItem
 };
