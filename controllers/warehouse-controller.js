@@ -2,6 +2,27 @@ import initKnex from "knex";
 import configuration from "../knexfile.js";
 const knex = initKnex(configuration);
 
+const validateWarehouse = (req, res, next) => {
+  const {
+    warehouse_name,
+    address,
+    city,
+    country,
+    contact_name,
+    contact_position,
+    contact_phone,
+    contact_email,
+  } = req.body;
+    
+    if (!warehouse_name || !address || !city || !country || !contact_name || !contact_position || !contact_phone || !contact_email) {
+        return res.status(400).json({error: 'All fields are required.'})
+    }
+
+    next();
+};
+
+
+
 // to get list of all warehouses
 const index = async (_req, res) => {
   try {
@@ -45,29 +66,61 @@ const findOne = async (req, res) => {
   }
 };
 
-
 // to get inventories for a given warehouse
 const getInventory = async (req, res) => {
-    try {
-        const inventoryItems = await knex("warehouses")
-            .join("inventories", "inventories.warehouse_id", "warehouses.id")
-            .where({ warehouse_id: req.params.id }).select("inventories.id", "inventories.item_name", "inventories.category", "inventories.status", "inventories.quantity")
-        
-        if (inventoryItems.length === 0) {
-            return res.status(404).json({
-                message: `Could not find any items for warehouse with ID ${req.params.id}.`
-            })
-        }
-        res.status(200).json(inventoryItems)
-    } catch (e) {
-        res.status(500).json({
-            message: `Unable to retrieve inventory items for warehouse with ID ${req.params.id}: ${e}`
-        })
+  try {
+    const inventoryItems = await knex("warehouses")
+      .join("inventories", "inventories.warehouse_id", "warehouses.id")
+      .where({ warehouse_id: req.params.id })
+      .select(
+        "inventories.id",
+        "inventories.item_name",
+        "inventories.category",
+        "inventories.status",
+        "inventories.quantity"
+      );
+
+    if (inventoryItems.length === 0) {
+      return res.status(404).json({
+        message: `Could not find any items for warehouse with ID ${req.params.id}.`,
+      });
     }
+    res.status(200).json(inventoryItems);
+  } catch (e) {
+    res.status(500).json({
+      message: `Unable to retrieve inventory items for warehouse with ID ${req.params.id}: ${e}`,
+    });
+  }
+};
+
+const updateWarehouse = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { warehouse_name, address, city, country, contact_name, contact_position, contact_phone, contact_email } = req.body
+
+        const warehouse = await knex("warehouses").where({ id: req.params.id }).first();
+        if (!warehouse) {
+            return res.status(404).json({error: "Warehouse does not exist"})
+        }
+        
+        await knex('warehouses')
+            .where({ id })
+            .update({
+                warehouse_name,
+                address,
+                city,
+                country,
+                contact_name,
+                contact_position,
+                contact_phone,
+                contact_email
+            })
+        const updatedWarehouse = await knex('warehouses').where({ id: req.params.id })
+        res.status(200).json(updatedWarehouse[0])
+    } catch (e) {
+        res.status(500).json({error: 'Failed to update warehouse'})
+    }
+    
 }
 
-export {
-    index,
-    findOne,
-    getInventory
- };
+export { validateWarehouse, index, findOne, getInventory, updateWarehouse };
