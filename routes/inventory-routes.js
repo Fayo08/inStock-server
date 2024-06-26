@@ -1,12 +1,22 @@
 import express from "express";
 const router = express.Router();
 import {
+    getAllInventories,
+    getAllCategories,
     validateInventory,
     checkWarehouseExists,
     checkInventoryExists,
     createInventoryItem,
     updateInventoryItem
 } from "../controllers/inventory-controller.js";
+
+// GET /api/inventories //
+
+router.get('/', getAllInventories);
+
+// GET /api/inventories/categories //
+
+router.get('/categories', getAllCategories);
 
 // create new inventory item //
 
