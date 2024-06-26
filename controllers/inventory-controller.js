@@ -2,6 +2,40 @@ import initKnex from "knex";
 import configuration from "../knexfile.js";
 const knex = initKnex(configuration);
 
+const getAllInventories = async (req, res) => {
+    try {
+        const inventories = await knex ('inventories')
+            .join('warehouses', 'inventories.warehouse_id', 'warehouses.id')
+            .select(
+                'inventories.id',
+                'warehouses.warehouse_name',
+                'inventories.item_name',
+                'inventories.description',
+                'inventories.category',
+                'inventories.status',
+                'inventories.quantity'
+            );
+        
+        res.status(200).json(inventories);
+    } catch (error) {
+        console.error('Error fetching inventories:', error);
+        res.status(500).json({error: 'Failed to fetch inventories.'});
+    }
+};
+
+const getAllCategories = async (req, res) => {
+    try {
+        const categories = await knex('inventories')
+            .distinct('category')
+            .select('category');
+
+        res.status(200).json(categories.map(c => c.category));
+    } catch (error) {
+        console.error('Error fetching categories:', error);
+        res.status(500).json({error: 'Failed to fetch categories'});
+    }
+};
+
 const validateInventory = (req, res, next) => {
   const { warehouse_id, item_name, description, category, status, quantity } =
     req.body;
@@ -124,10 +158,12 @@ const updateInventoryItem = async (req, res) => {
 };
 
 export {
-  validateInventory,
-  checkWarehouseExists,
-  getSingleItem,
-  checkInventoryExists,
-  createInventoryItem,
-  updateInventoryItem,
+    getAllInventories,
+    getAllCategories,
+    validateInventory,
+    checkWarehouseExists,
+    getSingleItem,
+    checkInventoryExists,
+    createInventoryItem,
+    updateInventoryItem,
 };

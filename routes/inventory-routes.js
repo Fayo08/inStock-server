@@ -1,6 +1,8 @@
 import express from "express";
 const router = express.Router();
 import {
+    getAllInventories,
+    getAllCategories,
   validateInventory,
   checkWarehouseExists,
   getSingleItem,
@@ -11,6 +13,14 @@ import {
 
 // get single inventory item
 router.get("/:id", getSingleItem);
+
+// GET /api/inventories //
+
+router.get('/', getAllInventories);
+
+// GET /api/inventories/categories //
+
+router.get('/categories', getAllCategories);
 
 // create new inventory item //
 
