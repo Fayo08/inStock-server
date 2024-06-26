@@ -3,7 +3,11 @@ import * as warehouseController from "../controllers/warehouse-controller.js";
 const router = express.Router();
 import { validateWarehouse } from "../controllers/warehouse-controller.js";
 
+
 router.route("/").get(warehouseController.index);
+
+
+router.route("/").post(warehouseController.createNewWarehouse);
 
 router.route("/:id")
   .get(warehouseController.findOne)
