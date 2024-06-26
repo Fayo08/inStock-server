@@ -3,37 +3,37 @@ import configuration from "../knexfile.js";
 const knex = initKnex(configuration);
 
 const getAllInventories = async (req, res) => {
-    try {
-        const inventories = await knex ('inventories')
-            .join('warehouses', 'inventories.warehouse_id', 'warehouses.id')
-            .select(
-                'inventories.id',
-                'warehouses.warehouse_name',
-                'inventories.item_name',
-                'inventories.description',
-                'inventories.category',
-                'inventories.status',
-                'inventories.quantity'
-            );
-        
-        res.status(200).json(inventories);
-    } catch (error) {
-        console.error('Error fetching inventories:', error);
-        res.status(500).json({error: 'Failed to fetch inventories.'});
-    }
+  try {
+    const inventories = await knex("inventories")
+      .join("warehouses", "inventories.warehouse_id", "warehouses.id")
+      .select(
+        "inventories.id",
+        "warehouses.warehouse_name",
+        "inventories.item_name",
+        "inventories.description",
+        "inventories.category",
+        "inventories.status",
+        "inventories.quantity"
+      );
+
+    res.status(200).json(inventories);
+  } catch (error) {
+    console.error("Error fetching inventories:", error);
+    res.status(500).json({ error: "Failed to fetch inventories." });
+  }
 };
 
 const getAllCategories = async (req, res) => {
-    try {
-        const categories = await knex('inventories')
-            .distinct('category')
-            .select('category');
+  try {
+    const categories = await knex("inventories")
+      .distinct("category")
+      .select("category");
 
-        res.status(200).json(categories.map(c => c.category));
-    } catch (error) {
-        console.error('Error fetching categories:', error);
-        res.status(500).json({error: 'Failed to fetch categories'});
-    }
+    res.status(200).json(categories.map((c) => c.category));
+  } catch (error) {
+    console.error("Error fetching categories:", error);
+    res.status(500).json({ error: "Failed to fetch categories" });
+  }
 };
 
 const validateInventory = (req, res, next) => {
@@ -74,7 +74,7 @@ const checkWarehouseExists = async (req, res, next) => {
 // get a single inventory item
 const getSingleItem = async (req, res) => {
   try {
-    const itemData = await knex("inventories")
+    const itemFound = await knex("inventories")
       .join("warehouses", "inventories.warehouse_id", "warehouses.id")
       .where({ "inventories.id": req.params.id })
       .select(
@@ -86,11 +86,12 @@ const getSingleItem = async (req, res) => {
         "inventories.status",
         "inventories.quantity"
       );
-    if (itemData.length === 0) {
+    if (itemFound.length === 0) {
       return res.status(404).json({
         message: `Item ${req.params.id} not found`,
       });
     }
+    const itemData = itemFound[0];
     res.json(itemData);
   } catch (error) {
     res.status(404).json({
@@ -158,12 +159,12 @@ const updateInventoryItem = async (req, res) => {
 };
 
 export {
-    getAllInventories,
-    getAllCategories,
-    validateInventory,
-    checkWarehouseExists,
-    getSingleItem,
-    checkInventoryExists,
-    createInventoryItem,
-    updateInventoryItem,
+  getAllInventories,
+  getAllCategories,
+  validateInventory,
+  checkWarehouseExists,
+  getSingleItem,
+  checkInventoryExists,
+  createInventoryItem,
+  updateInventoryItem,
 };
