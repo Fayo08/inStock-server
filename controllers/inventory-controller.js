@@ -38,6 +38,8 @@ const checkInventoryExists = async (req, res, next) => {
     next();
 }
 
+
+
 const createInventoryItem = async (req, res) => {
     try {
         const {warehouse_id, item_name, description, category, status, quantity} = req.body;
@@ -88,5 +90,6 @@ export {
     checkWarehouseExists,
     checkInventoryExists,
     createInventoryItem,
-    updateInventoryItem
+    updateInventoryItem,
+    
 };

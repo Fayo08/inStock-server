@@ -93,6 +93,48 @@ const getInventory = async (req, res) => {
   }
 };
 
+
+const createNewWarehouse = async (req, res) => {
+
+  console.log('Request Body:', req.body);
+
+
+  if (!req.body.contact_phone || req.body.contact_phone.length !== 10) {
+    return res.status(400).json({
+      message: "Please provide a valid phone number",
+    });
+  }
+
+  if (!req.body.contact_email || !req.body.contact_email.includes('@') ) {
+    return res.status(400).json({
+      message: "Please provide a valid email address",
+    });
+  }
+
+  try {
+  
+      const {warehouse_name, address, city, country, contact_name, contact_position, contact_phone, contact_email } = req.body;
+
+      const [id] = await knex('warehouses').insert({
+          warehouse_name,
+          address,
+          city,
+          country,
+          contact_name,
+          contact_position,
+          contact_phone,
+          contact_email
+      });
+
+      const newWarehouse = await knex('warehouses').where({id}).first();
+
+      res.status(201).json(newWarehouse);
+  } catch (error) {
+      res.status(500).json({error: 'Failed to  create new warehouse.'});
+  }
+};
+
+
 const updateWarehouse = async (req, res) => {
     try {
         const { id } = req.params;
@@ -123,4 +165,4 @@ const updateWarehouse = async (req, res) => {
     
 }
 
-export { validateWarehouse, index, findOne, getInventory, updateWarehouse };
+export { validateWarehouse, index, findOne, getInventory, updateWarehouse, createNewWarehouse  };
