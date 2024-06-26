@@ -104,6 +104,11 @@ const createNewWarehouse = async (req, res) => {
       message: "Please provide a valid phone number",
     });
   }
+  if (!req.body.warehouse_name || !req.body.address || !req.body.city || !req.body.country || !req.body.contact_name || !req.body.contact_position ) {
+    return res.status(400).json({
+      message: "Please fill in all the required fields",
+    });
+  }
 
   if (!req.body.contact_email || !req.body.contact_email.includes('@') ) {
     return res.status(400).json({
