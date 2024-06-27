@@ -13,15 +13,22 @@ const validateWarehouse = (req, res, next) => {
     contact_phone,
     contact_email,
   } = req.body;
-    
-    if (!warehouse_name || !address || !city || !country || !contact_name || !contact_position || !contact_phone || !contact_email) {
-        return res.status(400).json({error: 'All fields are required.'})
-    }
 
-    next();
+  if (
+    !warehouse_name ||
+    !address ||
+    !city ||
+    !country ||
+    !contact_name ||
+    !contact_position ||
+    !contact_phone ||
+    !contact_email
+  ) {
+    return res.status(400).json({ error: "All fields are required." });
+  }
+
+  next();
 };
-
-
 
 // to get list of all warehouses
 const index = async (_req, res) => {
@@ -66,6 +73,25 @@ const findOne = async (req, res) => {
   }
 };
 
+const deleteWarehouse = async (req, res) => {
+  try {
+    const deletedRow = await knex("warehouses")
+      .where({ id: req.params.id })
+      .delete();
+
+    if (deletedRow === 0) {
+      return res.status(404).json({
+        message: "No such warehouse",
+      });
+    }
+    res.sendStatus(204);
+  } catch (error) {
+    res.status(404).json({
+      message: "Unable to delete warehouse",
+    });
+  }
+};
+
 // to get inventories for a given warehouse
 const getInventory = async (req, res) => {
   try {
@@ -93,81 +119,110 @@ const getInventory = async (req, res) => {
   }
 };
 
-
 const createNewWarehouse = async (req, res) => {
-
-  console.log('Request Body:', req.body);
-
+  console.log("Request Body:", req.body);
 
   if (!req.body.contact_phone || req.body.contact_phone.length !== 10) {
     return res.status(400).json({
       message: "Please provide a valid phone number",
     });
   }
-  if (!req.body.warehouse_name || !req.body.address || !req.body.city || !req.body.country || !req.body.contact_name || !req.body.contact_position ) {
+  if (
+    !req.body.warehouse_name ||
+    !req.body.address ||
+    !req.body.city ||
+    !req.body.country ||
+    !req.body.contact_name ||
+    !req.body.contact_position
+  ) {
     return res.status(400).json({
       message: "Please fill in all the required fields",
     });
   }
 
-  if (!req.body.contact_email || !req.body.contact_email.includes('@') ) {
+  if (!req.body.contact_email || !req.body.contact_email.includes("@")) {
     return res.status(400).json({
       message: "Please provide a valid email address",
     });
   }
 
   try {
-  
-      const {warehouse_name, address, city, country, contact_name, contact_position, contact_phone, contact_email } = req.body;
+    const {
+      warehouse_name,
+      address,
+      city,
+      country,
+      contact_name,
+      contact_position,
+      contact_phone,
+      contact_email,
+    } = req.body;
 
-      const [id] = await knex('warehouses').insert({
-          warehouse_name,
-          address,
-          city,
-          country,
-          contact_name,
-          contact_position,
-          contact_phone,
-          contact_email
-      });
+    const [id] = await knex("warehouses").insert({
+      warehouse_name,
+      address,
+      city,
+      country,
+      contact_name,
+      contact_position,
+      contact_phone,
+      contact_email,
+    });
 
-      const newWarehouse = await knex('warehouses').where({id}).first();
+    const newWarehouse = await knex("warehouses").where({ id }).first();
 
-      res.status(201).json(newWarehouse);
+    res.status(201).json(newWarehouse);
   } catch (error) {
-      res.status(500).json({error: 'Failed to  create new warehouse.'});
+    res.status(500).json({ error: "Failed to  create new warehouse." });
   }
 };
 
-
 const updateWarehouse = async (req, res) => {
-    try {
-        const { id } = req.params;
-        const { warehouse_name, address, city, country, contact_name, contact_position, contact_phone, contact_email } = req.body
+  try {
+    const { id } = req.params;
+    const {
+      warehouse_name,
+      address,
+      city,
+      country,
+      contact_name,
+      contact_position,
+      contact_phone,
+      contact_email,
+    } = req.body;
 
-        const warehouse = await knex("warehouses").where({ id: req.params.id }).first();
-        if (!warehouse) {
-            return res.status(404).json({error: "Warehouse does not exist"})
-        }
-        
-        await knex('warehouses')
-            .where({ id })
-            .update({
-                warehouse_name,
-                address,
-                city,
-                country,
-                contact_name,
-                contact_position,
-                contact_phone,
-                contact_email
-            })
-        const updatedWarehouse = await knex('warehouses').where({ id: req.params.id })
-        res.status(200).json(updatedWarehouse[0])
-    } catch (e) {
-        res.status(500).json({error: 'Failed to update warehouse'})
+    const warehouse = await knex("warehouses")
+      .where({ id: req.params.id })
+      .first();
+    if (!warehouse) {
+      return res.status(404).json({ error: "Warehouse does not exist" });
     }
-    
-}
 
-export { validateWarehouse, index, findOne, getInventory, updateWarehouse, createNewWarehouse  };
+    await knex("warehouses").where({ id }).update({
+      warehouse_name,
+      address,
+      city,
+      country,
+      contact_name,
+      contact_position,
+      contact_phone,
+      contact_email,
+    });
+    const updatedWarehouse = await knex("warehouses").where({
+      id: req.params.id,
+    });
+    res.status(200).json(updatedWarehouse[0]);
+  } catch (e) {
+    res.status(500).json({ error: "Failed to update warehouse" });
+  }
+};
+
+export {
+  validateWarehouse,
+  index,
+  findOne,
+  deleteWarehouse,
+  getInventory,
+  updateWarehouse,
+  createNewWarehouse,
+};
