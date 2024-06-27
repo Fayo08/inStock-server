@@ -120,13 +120,7 @@ const getInventory = async (req, res) => {
 };
 
 const createNewWarehouse = async (req, res) => {
-  console.log("Request Body:", req.body);
 
-  if (!req.body.contact_phone || req.body.contact_phone.length !== 10) {
-    return res.status(400).json({
-      message: "Please provide a valid phone number",
-    });
-  }
   if (
     !req.body.warehouse_name ||
     !req.body.address ||
@@ -137,6 +131,11 @@ const createNewWarehouse = async (req, res) => {
   ) {
     return res.status(400).json({
       message: "Please fill in all the required fields",
+    });
+  }
+  if (!req.body.contact_phone || req.body.contact_phone.length !== 10) {
+    return res.status(400).json({
+      message: "Please provide a valid phone number",
     });
   }
 
