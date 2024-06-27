@@ -73,6 +73,7 @@ const findOne = async (req, res) => {
   }
 };
 
+// delete a warehouse
 const deleteWarehouse = async (req, res) => {
   try {
     const deletedRow = await knex("warehouses")

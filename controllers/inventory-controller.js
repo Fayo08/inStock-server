@@ -100,6 +100,26 @@ const getSingleItem = async (req, res) => {
   }
 };
 
+// delete an inventory item
+const deleteInventoryItem = async (req, res) => {
+  try {
+    const deletedRow = await knex("inventories")
+      .where({ id: req.params.id })
+      .delete();
+
+    if (deletedRow === 0) {
+      return res.status(404).json({
+        message: "No such inventory item",
+      });
+    }
+    res.sendStatus(204);
+  } catch (error) {
+    res.status(404).json({
+      message: "Unable to delete inventory item",
+    });
+  }
+};
+
 const checkInventoryExists = async (req, res, next) => {
   const { id } = req.body;
   const inventory = await knex("inventories").where({ id }).first();
@@ -164,6 +184,7 @@ export {
   validateInventory,
   checkWarehouseExists,
   getSingleItem,
+  deleteInventoryItem,
   checkInventoryExists,
   createInventoryItem,
   updateInventoryItem,
