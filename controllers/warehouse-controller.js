@@ -120,8 +120,6 @@ const getInventory = async (req, res) => {
 };
 
 const createNewWarehouse = async (req, res) => {
-  console.log("Request Body:", req.body);
-
 
   if (
     !req.body.warehouse_name ||
