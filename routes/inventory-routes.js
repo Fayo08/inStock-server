@@ -3,33 +3,33 @@ const router = express.Router();
 import {
     getAllInventories,
     getAllCategories,
-  validateInventory,
-  checkWarehouseExists,
-  getSingleItem,
-  checkInventoryExists,
-  createInventoryItem,
-  updateInventoryItem,
+    validateInventory,
+    checkWarehouseExists,
+    getSingleItem,
+    checkInventoryExists,
+    createInventoryItem,
+    updateInventoryItem,
 } from "../controllers/inventory-controller.js";
 
 // get single inventory item
-router.get("/:id", getSingleItem);
+router.get("/api/inventories/:id", getSingleItem);
 
 // GET /api/inventories //
 
-router.get('/', getAllInventories);
+router.get('/api/inventories', getAllInventories);
 
 // GET /api/inventories/categories //
 
-router.get('/categories', getAllCategories);
+router.get('/api/inventories/categories', getAllCategories);
 
 // create new inventory item //
 
-router.post("/", validateInventory, checkWarehouseExists, createInventoryItem);
+router.post("/api/inventories", validateInventory, checkWarehouseExists, createInventoryItem);
 
 // update existing inventory item //
 
 router.put(
-  "/:id",
+  "/api/inventories/:id",
   validateInventory,
   checkWarehouseExists,
   checkInventoryExists,
