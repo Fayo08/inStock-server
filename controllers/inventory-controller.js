@@ -79,6 +79,7 @@ const getSingleItem = async (req, res) => {
       .where({ "inventories.id": req.params.id })
       .select(
         "inventories.id",
+        "inventories.warehouse_id",
         "warehouses.warehouse_name",
         "inventories.item_name",
         "inventories.description",
