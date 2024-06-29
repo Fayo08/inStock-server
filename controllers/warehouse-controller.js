@@ -118,7 +118,6 @@ const getInventory = async (req, res) => {
     });
   }
 };
-
 const createNewWarehouse = async (req, res) => {
 
   if (
@@ -175,6 +174,8 @@ const createNewWarehouse = async (req, res) => {
     res.status(500).json({ error: "Failed to  create new warehouse." });
   }
 };
+
+
 
 const updateWarehouse = async (req, res) => {
   try {
