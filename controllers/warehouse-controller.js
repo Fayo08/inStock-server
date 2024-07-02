@@ -120,7 +120,20 @@ const getInventory = async (req, res) => {
   }
 };
 
+function formatPhoneNumber(phoneNumber) {
+  
+  const phonePattern = /^\+(\d{1,2})\s?\((\d{3})\)\s?(\d{3})-(\d{4})$/;
+  
+
+  if (phonePattern.test(phoneNumber)) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
 const createNewWarehouse = async (req, res) => {
+
 
   if (
     !req.body.warehouse_name ||
@@ -134,7 +147,7 @@ const createNewWarehouse = async (req, res) => {
       message: "Please fill in all the required fields",
     });
   }
-  if (!req.body.contact_phone || req.body.contact_phone.length !== 10) {
+  if (!req.body.contact_phone || !formatPhoneNumber(req.body.contact_phone)) {
     return res.status(400).json({
       message: "Please provide a valid phone number",
     });
